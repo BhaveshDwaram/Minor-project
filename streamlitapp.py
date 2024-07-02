@@ -9,16 +9,25 @@ with open("polynomial_regression.pkl", "rb") as f:
     polynomial_regression = pickle.load(f)
 
 with open("family_floater.pkl", "rb") as f:
-    family_floater_regression = pickle.load(f)
+    family_floater = pickle.load(f)
 
 def welcome():
     return "Welcome All"
 
 def predict_medical_insurance_cost(model, age, sex, bmi, children, smoker, region, parents=0):
     scaler = StandardScaler()
+
     if model == "Family Floater":
         features = np.array([[age, sex, bmi, children, smoker, region, parents]])
-        prediction = family_floater_regression.predict(features)
+        new_features_df = pd.DataFrame(features, columns=['age', 'sex', 'bmi', 'children', 'smoker', 'region','parents'])
+        new_features_df[['age', 'bmi']] = scaler.fit_transform(new_features_df[['age', 'bmi']])
+        poly = PolynomialFeatures(degree=2, include_bias=False)
+        new_poly_features = poly.fit_transform(new_features_df[['age', 'bmi']])
+        poly_feature_names = poly.get_feature_names_out(['age', 'bmi'])
+        new_poly_df = pd.DataFrame(new_poly_features, columns=poly_feature_names)
+        new_X_poly = pd.concat([new_features_df.drop(columns=['age', 'bmi']), new_poly_df], axis=1)
+        prediction = family_floater.predict(new_X_poly)
+
     else:  # Polynomial regression
         features = np.array([[age, sex, bmi, children, smoker, region]])
         new_features_df = pd.DataFrame(features, columns=['age', 'sex', 'bmi', 'children', 'smoker', 'region'])
@@ -105,7 +114,7 @@ def main():
             st.error('Invalid input values. Prediction could not be made.')
         else:
             if result == 1000:
-                st.success(f'The approximate medical insurance premium cost per year is {raw_text} {result:.2f}. Default value is used because the predicted value was less than 1000.')
+                st.success(f'The approximate medical insurance premium cost per year is {raw_text} {result:.2f}. (Default value is used)')
             else:
                 st.success(f'The approximate medical insurance premium cost per year is {raw_text} {result:.2f}.')
 
