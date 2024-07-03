@@ -112,12 +112,14 @@ st.markdown("""
         }
         /* Welcome Section */
         .welcome-section {
-            background:#dd4e10;
+            background:#000000;
             padding: 10px;
             border-radius: 10px;
             color: white;
             text-align: left;
             margin-bottom: 30px;
+            border :solid;
+            border-color :#ff5733;
         }
         .welcome-section h1 {
             font-size: 2.5rem;
@@ -138,11 +140,11 @@ def main():
     <div class="welcome-section" >
         <h1>Welcome To Our  Website !</h1>
         <p>
-            We built this website to help individuals and families easily estimate their medical insurance premium costs. 
-            Our aim is to provide a convenient and reliable tool for predicting insurance premiums based on various factors like age, 
-            BMI, and smoking habits. Whether you're planning for the future or looking for the best insurance options, 
-            our prediction model can assist you in making informed decisions. 
-            Explore different scenarios and understand how changes in your lifestyle and choices can affect your insurance costs.
+            Predicting medical insurance premiums is essential for several reasons. 
+            It allows insurance companies to accurately assess the financial risks associated with insuring individuals. 
+            By leveraging predictive models, insurers can determine premiums that align closely with the expected costs of providing healthcare coverage to policyholders. 
+            Also, accurate premium prediction promotes fairness and transparency in the insurance market. 
+            It ensures that individuals are charged premiums that reflect their specific risk profiles based on factors such as age, medical history, lifestyle choices, and other relevant demographics. 
         </p>
     </div>
     """, unsafe_allow_html=True)
