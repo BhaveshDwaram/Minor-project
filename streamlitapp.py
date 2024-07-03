@@ -113,15 +113,16 @@ st.markdown("""
         /* Welcome Section */
         .welcome-section {
             background:#dd4e10;
-            padding: 40px;
+            padding: 10px;
             border-radius: 10px;
             color: white;
-            text-align: center;
+            text-align: left;
             margin-bottom: 30px;
         }
         .welcome-section h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
+            text-align: center;
             color : white;
         }
         .welcome-section p {
