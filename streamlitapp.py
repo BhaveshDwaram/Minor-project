@@ -19,7 +19,7 @@ def predict_medical_insurance_cost(model, age, sex, bmi, children, smoker, regio
 
     if model == "Family Floater":
         features = np.array([[age, sex, bmi, children, smoker, region, parents]])
-        new_features_df = pd.DataFrame(features, columns=['age', 'sex', 'bmi', 'children', 'smoker', 'region','parents'])
+        new_features_df = pd.DataFrame(features, columns=['age', 'sex', 'bmi', 'children', 'smoker', 'region', 'parents'])
         new_features_df[['age', 'bmi']] = scaler.fit_transform(new_features_df[['age', 'bmi']])
         poly = PolynomialFeatures(degree=2, include_bias=False)
         new_poly_features = poly.fit_transform(new_features_df[['age', 'bmi']])
@@ -41,33 +41,147 @@ def predict_medical_insurance_cost(model, age, sex, bmi, children, smoker, regio
     
     return prediction
 
+# Custom CSS
+st.markdown("""
+    <style>
+        .main {
+            background-color: #000000;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .header {
+            background-color: #ff5733;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .header h3 {
+            color: white;
+            text-align: center;
+        }
+        .form-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        .form-container:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .form-container input, .form-container select, .form-container textarea {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-container input:focus, .form-container select:focus, .form-container textarea:focus {
+            border-color: #ff5733;
+            box-shadow: 0 0 8px rgba(255, 87, 51, 0.6);
+        }
+        .result-box {
+            background-color: #28a745;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .about-box {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .footer {
+            text-align: center;
+            font-size: 30px;
+            margin-top: 20px;
+            color: #888;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        /* Welcome Section */
+        .welcome-section {
+            background:#dd4e10;
+            padding: 40px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color : white;
+        }
+        .welcome-section p {
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 def main():
-    st.title("Welcome to our website!")
-    
-    # HTML for the title
-    html_temp = """
-    <div style="background-color:tomato;padding:10px;border-radius:10px;margin-bottom:10px">
-    <h3 style="color:white;text-align:center;">Medical Insurance Premium Cost Prediction</h3>
+    # Welcome Section
+    st.markdown("""
+    <div class="welcome-section" >
+        <h1>Welcome To Our  Website !</h1>
+        <p>
+            We built this website to help individuals and families easily estimate their medical insurance premium costs. 
+            Our aim is to provide a convenient and reliable tool for predicting insurance premiums based on various factors like age, 
+            BMI, and smoking habits. Whether you're planning for the future or looking for the best insurance options, 
+            our prediction model can assist you in making informed decisions. 
+            Explore different scenarios and understand how changes in your lifestyle and choices can affect your insurance costs.
+        </p>
     </div>
-    """
-    st.markdown(html_temp, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-    model_type = st.selectbox("Choose Model Type", ["Polynomial", "Family Floater"])
+    st.markdown('<div class="header" id="prediction-model"><h3>Medical Insurance Premium Cost Prediction</h3></div>', unsafe_allow_html=True)
 
-    with st.form(key="insurance_form"):
-        age = st.number_input("Age", min_value=1, max_value=100, value=1, step=1)
+    model_type = st.selectbox("Choose Model Type", ["Polynomial Model", "Family Floater Model"])
+
+    height_unit = st.selectbox("Height Unit", ["cm", "feet and inches"])
+    
+    with st.form(key="insurance_form", clear_on_submit=False):
+        
+        age = st.number_input("Age (in years)", min_value=1, max_value=100, value=1, step=1)
         sex = st.radio("Sex", ["Male", "Female"])
-        bmi = st.number_input("BMI", value=25.0, step=0.1)
+        weight = st.number_input("Weight (in kg)", value=70.0, step=0.1)
+        
+        if height_unit == "cm":
+            height = st.number_input("Height (in cm)", value=170.0, step=0.1)
+        else:
+            col1, col2 = st.columns(2)
+            with col1:
+                feet = st.number_input("Height (Feet)", min_value=0, max_value=8, value=5, step=1)
+            with col2:
+                inches = st.number_input("Height (Inches)", min_value=0.0, max_value=11.9, value=8.0, step=0.1)
+            height = feet * 30.48 + inches * 2.54  # Convert feet and inches to cm
+
+        bmi = weight / (height / 100) ** 2  # Calculate BMI
+
         children = st.number_input("Number of Children", min_value=0, max_value=10, value=0, step=1)
-        smoker = st.radio("Smoker", ["Yes", "No"])
-        region = st.radio("Region (Hemisphere)", ["North-East", "North-West", "South-East", "South-West"])
+        smoker = st.radio("Are you a Smoker ?", ["Yes", "No"])
+        region = st.radio("Select the Region", ["North-East", "North-West", "South-East", "South-West"])
 
         if model_type == "Family Floater":
             parents = st.number_input("Number of Parents", min_value=0, max_value=2, value=0, step=1)
         else:
             parents = 0
 
-        submit_button = st.form_submit_button(label='Predict')
+        submit_button = st.form_submit_button(label='Predict insurance premium')
+
+        st.markdown('</div>', unsafe_allow_html=True)
     
     result = 0.0
     if submit_button:
@@ -114,13 +228,14 @@ def main():
             st.error('Invalid input values. Prediction could not be made.')
         else:
             if result == 1000:
-                st.success(f'The approximate medical insurance premium cost per year is {raw_text} {result:.2f}. (Default value is used)')
+                st.markdown(f'<div class="result-box">The approximate medical insurance premium cost per year is {raw_text} {result:.2f}. (Default value is used)</div>', unsafe_allow_html=True)
             else:
-                st.success(f'The approximate medical insurance premium cost per year is {raw_text} {result:.2f}.')
+                st.markdown(f'<div class="result-box">The approximate medical insurance premium cost per year is {raw_text} {result:.2f}.</div>', unsafe_allow_html=True)
 
-    if st.button("About"):
-        st.text("Built by Bhavesh Dwaram")
-        st.text("NIE Mysuru")
+    if st.button("Built-By"):
+        st.markdown('<div class="about-box">Built by Animesh Kumar ,Bhavesh Dwaram,Nishanth Hebbar, Damodhar <br>NIE Mysuru</div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="footer">Medical Insurance Prediction App</div>', unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
