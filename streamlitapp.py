@@ -151,9 +151,9 @@ def main():
 
     st.markdown('<div class="header" id="prediction-model"><h3>Medical Insurance Premium Cost Prediction</h3></div>', unsafe_allow_html=True)
 
-    model_type = st.selectbox("Choose Model Type", ["Polynomial Model", "Family Floater Model"])
+    model_type = st.selectbox("Choose Model Type", ["Polynomial Model", "Family Floater"])
 
-    height_unit = st.selectbox("Height Unit", ["centi-meter", "feet and inches"])
+    height_unit = st.selectbox("Height Unit", ["centimeter", "feet and inches"])
     
     with st.form(key="insurance_form", clear_on_submit=False):
         
