@@ -153,7 +153,7 @@ def main():
 
     model_type = st.selectbox("Choose Model Type", ["Polynomial Model", "Family Floater Model"])
 
-    height_unit = st.selectbox("Height Unit", ["cm", "feet and inches"])
+    height_unit = st.selectbox("Height Unit", ["centi-meter", "feet and inches"])
     
     with st.form(key="insurance_form", clear_on_submit=False):
         
